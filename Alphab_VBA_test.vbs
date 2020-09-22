@@ -1,4 +1,4 @@
-Attribute VB_Name = "Module3"
+
 Sub Activate()
 
 'Activate all worksheet so the VBA scripts all the data
@@ -53,10 +53,11 @@ If current_ticker <> next_ticker Then
 
 'calculate the percent_change also troubleshoot division by zero
     If open_price <> 0 Then
-        percent_change = (yearly_change / open_price) * 100
+        percent_change = (yearly_change / open_price)
         Cells(start_row, 11).Value = percent_change
+        Cells(start_row, 11).NumberFormat = "0.00%"
     Else
-        MsgBox ("error dividing by zero")
+        open_price = 0
     End If
     
 'condition formating formatting for yearly_changes : green for positive and red for negative.
@@ -70,7 +71,7 @@ End If
 start_row = start_row + 1
 'reset the total
 total = 0
-'to ensure open price is changed to the value of next_ticker instead of resetting to preset value 
+'to ensure open price is changed to the value of next_ticker instead of resetting to preset value
 open_price = Cells(Current_row + 1, 3).Value
 
 
@@ -82,6 +83,7 @@ Next Current_row
 
 
 End Sub
+
 
 
 
