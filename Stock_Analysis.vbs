@@ -4,8 +4,7 @@ Sub Activate()
 'Activate all worksheet so the VBA scripts all the data
 For Each ws In Worksheets
     ws.Activate
-    Call Calculate
-    
+    Call Calculate 
 Next ws
 
 End Sub
@@ -18,32 +17,36 @@ Dim next_ticker As String
 Dim total As Double
 Dim total_row As Double
 Dim open_price As Double
+Dim open_price2 As Double
 Dim close_price As Double
 Dim yearly_change As Double
 Dim percent_change As Double
 
-'Create headers/title for the Calculated data
+
+'Create headers/title for the Calculated data column
 Range("I1").Value = "Ticker"
 Range("J1").Value = "Yearly Change"
 Range("K1").Value = "Percent Change"
 Range("L1").Value = "Total Stock Volume"
 
-'VBA Calc Scripting, assign values to variavles
+'VBA Calc Scripting, assign values to variables
 total_row = Cells(Rows.Count, "A").End(xlUp).Row
 start_row = 2
 
 'set the inital prices as the first value seen on ws, then loop will be used to identify the first value after change in tickername
 open_price = Cells(start_row, 3).Value
+'for when open_price is zero, to avoid division error
+open_price2 = Cells(start_row + 1, 3).Value
 
 'create a loop to check if the ticker name changes for the wholesheet
 For current_row = 2 To total_row
 
+'+1 ensure that next row is read
 current_ticker = Cells(current_row, 1).Value
 next_ticker = Cells(current_row + 1, 1).Value
 
 'Add the total Volume
 total = total + Cells(current_row, 7).Value
-
 
 If current_ticker <> next_ticker Then
     Cells(start_row, 9).Value = current_ticker
@@ -56,7 +59,8 @@ If current_ticker <> next_ticker Then
     If open_price = 0 And close_price = 0 Then
         percent_change = 0
     ElseIf open_price = 0 And close_price <> 0 Then
-        percent_change = 1
+    'similar to find the next_ticker, using +1 to to move to next row to find a value that not zero to get the percent change
+        percent_change = (yearly_change / open_price2)
     Else
         percent_change = (yearly_change / open_price)
         Cells(start_row, 11).Value = percent_change
@@ -69,7 +73,6 @@ If yearly_change > 0 Then
     Cells(start_row, 10).Interior.ColorIndex = 4
 ElseIf yearly_change <= 0 Then
 Cells(start_row, 10).Interior.ColorIndex = 3
-
 End If
 'to start on next Row
 start_row = start_row + 1
@@ -77,7 +80,6 @@ start_row = start_row + 1
 total = 0
 'to ensure open price is changed to the value of next_ticker instead of resetting to preset value
 open_price = Cells(current_row + 1, 3).Value
-
 
 End If
 
@@ -98,6 +100,7 @@ Dim min_per As Double
 Dim vol_lastrow As Double
 Dim max_vol As Double
 
+'set the variables to zero
 max_per = 0
 min_per = 0
 'identifying last percentage row and last vol row
@@ -107,6 +110,7 @@ vol_lastrow = Cells(Rows.Count, 12).End(xlUp).Row
 'loop through the row using if statement to get the max and min
 For currentrow2 = 2 To per_lastrow
 
+'the loop goest through each row and record the value if larger than the previous and vice versa for min
 If max_per < Cells(currentrow2, 11).Value Then
     max_per = Cells(currentrow2, 11).Value
     Range("Q2").Value = max_per
@@ -122,8 +126,10 @@ End If
 
   Next currentrow2
   
+'create a parameter for the length of the row for volume that the loop needs to run through
 For currentrow3 = 2 To vol_lastrow
 
+'loops through each row to find the largest value in the row. if next value is greater max_vol gets overwritten till complete.
 If max_vol < Cells(currentrow3, 12).Value Then
     max_vol = Cells(currentrow3, 12).Value
     Range("Q4").Value = max_vol
@@ -140,6 +146,7 @@ Columns("A:Q").AutoFit
 
 
 End Sub
+
 
 
 
