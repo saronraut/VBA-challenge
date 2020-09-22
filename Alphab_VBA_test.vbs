@@ -5,6 +5,7 @@ Sub Activate()
 For Each ws In Worksheets
     ws.Activate
     Call Calculate
+    
 Next ws
 
 End Sub
@@ -131,7 +132,12 @@ If max_vol < Cells(currentrow3, 12).Value Then
     End If
     
     Next currentrow3
-    
+
+'autofit all the columns so data can be properly displayed
+Columns("A:Q").AutoFit
+
+
+
 
 End Sub
 
