@@ -11,7 +11,7 @@ End Sub
 
 Sub Calculate()
 
-'Part one is set variables
+'set variables
 Dim current_ticker As String
 Dim next_ticker As String
 Dim total As Double
