@@ -33,10 +33,8 @@ Range("L1").Value = "Total Stock Volume"
 total_row = Cells(Rows.Count, "A").End(xlUp).Row
 start_row = 2
 
-'set the inital prices as the first value seen on ws, then loop will be used to identify the first value after change in tickername
+'set the inital prices as the first value seen on ws 
 open_price = Cells(start_row, 3).Value
-'for when open_price is zero, to avoid division error
-open_price2 = Cells(start_row + 1, 3).Value
 
 'create a loop to check if the ticker name changes for the wholesheet
 For current_row = 2 To total_row
@@ -55,12 +53,9 @@ If current_ticker <> next_ticker Then
     yearly_change = close_price - open_price
     Cells(start_row, 10).Value = yearly_change
 
-'calculate the percent_change also troubleshoot division by zero
-    If open_price = 0 And close_price = 0 Then
+'calculate the percent_change also troubleshoot division by zero error
+    If open_price = 0 Then
         percent_change = 0
-    ElseIf open_price = 0 And close_price <> 0 Then
-    'similar to find the next_ticker, using +1 to to move to next row to find a value that not zero to get the percent change
-        percent_change = (yearly_change / open_price2)
     Else
         percent_change = (yearly_change / open_price)
         Cells(start_row, 11).Value = percent_change
